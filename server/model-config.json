@@ -15,6 +15,18 @@
   },
   "Uva": {
     "dataSource": "db",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "find": true,
+          "findOne": true,
+          "findById": true,
+          "count": true,
+          "exists": true
+        }
+      }
+    }
   }
 }
