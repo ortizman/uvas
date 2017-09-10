@@ -46,7 +46,8 @@ var processInfo = (html) => {
     values = _.compact(values);
     var uvas = [];
     for (var index = 0; index < values.length; index = index + 2) {
-      uvas.push({fecha: values[index], valor: +values[index + 1].replace(/\./g, '').replace(',', '.')});
+        const [d, m, y] = values[index].split('/')
+        uvas.push({fecha: new Date(y, m-1, d), valor: +values[index + 1].replace(/\./g, '').replace(',', '.')});
     }
     console.log(_.head(uvas));
     def.resolve(uvas);
