@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NgModel } from '@angular/forms';
-import { Horseman } from 'node-horseman';
+import { Http, Response } from "@angular/http";
+import 'rxjs/add/operator/map';
 
 @Component({
   selector: 'app-root',
@@ -8,37 +9,40 @@ import { Horseman } from 'node-horseman';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  private apiUrl = 'http://localhost:3000/api/uvas?filter[limit]=100&filter[order]=id%20ASC';
+  private uvas: Array<any> = [];
 
-  horseman;
-
-  constructor(){
-    this.horseman = new Horseman();
+  constructor(private http: Http) {
+    this.getUvas();
   }
 
-  title = 'La nueva app de Angular 4!!!';
-  toggle = true;
-  name: string = '';
-  click() {
-
-    this.horseman
-    .userAgent('Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0')
-    .open('http://www.google.com')
-    .type('input[name="q"]', 'github')
-    .click('[name="btnK"]')
-    .keyboardEvent('keypress', 16777221)
-    .waitForSelector('div.g')
-    .count('div.g')
-    .log() // prints out the number of results
-    .close();
-
-    this.name = 'reseteo';
-
-    if (this.toggle) {
-      this.title = 'Cambio de nombre!'
-    } else {
-      this.title = 'Otro Cambio de nombre!'
-    }
-
-    this.toggle = !this.toggle;
+  getUvas() {
+    this.http.get(this.apiUrl).subscribe(data => {
+      this.uvas = data.json();
+      this.lineChartData[0].data = this.uvas.map(uva => uva.valor);
+      this.lineChartLabels = this.uvas.map(uva => uva.fecha);
+    });
   }
+
+  // lineChart
+  public lineChartData: Array<any> = [
+    { data: [], label: 'Valor UVA' }
+  ];
+  public lineChartLabels: Array<any> = [];
+  public lineChartOptions: any = {
+    responsive: true
+  };
+
+  public lineChartLegend: boolean = true;
+  public lineChartType: string = 'line';
+
+  // events
+  public chartClicked(e: any): void {
+    console.log(e);
+  }
+
+  public chartHovered(e: any): void {
+    console.log(e);
+  }
+
 }
