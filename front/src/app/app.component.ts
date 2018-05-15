@@ -9,7 +9,7 @@ import 'rxjs/add/operator/map';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  private apiUrl = 'http://localhost:3000/api/uvas?filter[limit]=100&filter[order]=id%20ASC';
+  private apiUrl = 'http://localhost:3000/api/uvas?filter[limit]=31&filter[order]=id%20ASC';
   private uvas: Array<any> = [];
 
   constructor(private http: Http) {
@@ -19,8 +19,11 @@ export class AppComponent {
   getUvas() {
     this.http.get(this.apiUrl).subscribe(data => {
       this.uvas = data.json();
-      this.lineChartData[0].data = this.uvas.map(uva => uva.valor);
-      this.lineChartLabels = this.uvas.map(uva => uva.fecha);
+      this.lineChartData[0].data = this.uvas.reverse().map(uva => uva.valor);
+      this.lineChartLabels = this.uvas.map(uva => uva.fecha.split('T')[0]);
+
+
+
     });
   }
 
@@ -34,7 +37,7 @@ export class AppComponent {
   };
 
   public lineChartLegend: boolean = true;
-  public lineChartType: string = 'line';
+  public lineChartType: string = 'bar';
 
   // events
   public chartClicked(e: any): void {
