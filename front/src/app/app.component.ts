@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { Http, Response } from "@angular/http";
+import { environment as env } from '../environments/environment';
+
 import 'rxjs/add/operator/map';
 
 @Component({
@@ -9,7 +11,7 @@ import 'rxjs/add/operator/map';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  private apiUrl = 'http://localhost:3000/api/uvas?filter[limit]=31&filter[order]=id%20ASC';
+  private apiUrl = env.api + '/api/uvas?filter[limit]=31&filter[order]=id%20ASC';
   private uvas: Array<any> = [];
 
   constructor(private http: Http) {
