@@ -3,7 +3,7 @@
 module.exports = function (Uva) {
 
   let getFormatDate = function (date, sustractMonth, day) {
-    return date.getFullYear() + '-' + '0' + ((date.getMonth() + 1) - sustractMonth) + '-' + day;
+    return new Date(date.getFullYear(), ((date.getMonth()) - sustractMonth), day);
   };
 
   Uva.lastYear = function (cb) {
@@ -14,20 +14,36 @@ module.exports = function (Uva) {
     for (let i = 0; i <= d.getMonth(); i++) {
       cond.push(
         {
-          fecha:{
-            between:[getFormatDate(d, i, '01'), getFormatDate(d, i, '02')]
+          fecha: {
+            between: [getFormatDate(d, i, 0), getFormatDate(d, i, 1)]
           }
         })
-      
     }
+
+    // Agrego la fecha actual
+    cond.push({
+      fecha: {
+        between: [getFormatDate(d, 0, d.getDate()), getFormatDate(d, 0, d.getDate())]
+      }
+    })
 
     Uva.find(
       {
         where: {
           or: cond,
         },
+        order: 'fecha ASC'
       },
-      cb
+      (err, uvas) => {
+        // Elimino el primer elemento del array
+        if (!err) {
+          uvas.shift()
+          cb(null, uvas)
+        } else {
+          cb(err, null)
+        }
+      }
+      
     );
 
   };

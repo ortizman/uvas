@@ -23,8 +23,10 @@ export class AppComponent {
   getUvasAnual() {
     this.http.get(env.api + '/api/uvas/lastYear?filter[limit]=12&filter[order]=id%20ASC').subscribe(data => {
       this.uvasAnual = data.json();
-      this.lineChartData[0].data = this.uvasAnual.reverse().map(uva => uva.valor);
-      this.lineChartLabels = this.uvasAnual.map(uva => uva.fecha.split('T')[0]);
+      this.lineChartData[0].data = this.uvasAnual.filter(uva => new Date(uva.fecha).getDate() == 1).map(uva => uva.valor);
+      this.lineChartData[1].data = this.uvasAnual.filter(uva => new Date(uva.fecha).getDate() != 1).map(uva => uva.valor);
+
+      this.lineChartLabels = this.uvasAnual.filter(uva => new Date(uva.fecha).getDate() == 1).map(uva => new Date(uva.fecha).toLocaleString(navigator.language, {month: "long"}) );
     });
   }
 
@@ -40,7 +42,8 @@ export class AppComponent {
 
   // Anual
   public lineChartData: Array<any> = [
-    { data: [], label: 'Valor UVA' }
+    { data: [], label: 'Principio de Mes' },
+    { data: [], label: 'Fin de Mes'}
   ];
   public lineChartLabels: Array<any> = [];
   public lineChartOptions: any = {
