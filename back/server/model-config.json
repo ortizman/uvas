@@ -24,7 +24,8 @@
           "findOne": true,
           "findById": true,
           "count": true,
-          "exists": true
+          "exists": true,
+          "lastYear": true
         }
       }
     }

@@ -11,25 +11,34 @@ import 'rxjs/add/operator/map';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  private apiUrl = env.api + '/api/uvas?filter[limit]=31&filter[order]=id%20ASC';
-  private uvas: Array<any> = [];
+  private uvasAnual: Array<any> = [];
+
+  private uvasUltMes: Array<any> = [];
 
   constructor(private http: Http) {
-    this.getUvas();
+    this.getUvasAnual();
+    this.getUvasUltimoMes();
   }
 
-  getUvas() {
-    this.http.get(this.apiUrl).subscribe(data => {
-      this.uvas = data.json();
-      this.lineChartData[0].data = this.uvas.reverse().map(uva => uva.valor);
-      this.lineChartLabels = this.uvas.map(uva => uva.fecha.split('T')[0]);
-
-
-
+  getUvasAnual() {
+    this.http.get(env.api + '/api/uvas/lastYear?filter[limit]=12&filter[order]=id%20ASC').subscribe(data => {
+      this.uvasAnual = data.json();
+      this.lineChartData[0].data = this.uvasAnual.reverse().map(uva => uva.valor);
+      this.lineChartLabels = this.uvasAnual.map(uva => uva.fecha.split('T')[0]);
     });
   }
 
-  // lineChart
+  getUvasUltimoMes() {
+    var today = new Date();
+    let currentDate = today.getFullYear() + '-' + (today.getMonth()) + '-01';
+    this.http.get(env.api + '/api/uvas?filter[order]=id%20ASC&filter[where][fecha][gt]=' + currentDate).subscribe(data => {
+      this.uvasUltMes = data.json();
+      this.lineChartDataUltMes[0].data = this.uvasUltMes.reverse().map(uva => uva.valor);
+      this.lineChartLabelsUltMes = this.uvasUltMes.map(uva => uva.fecha.split('T')[0]);
+    });
+  }
+
+  // Anual
   public lineChartData: Array<any> = [
     { data: [], label: 'Valor UVA' }
   ];
@@ -40,6 +49,19 @@ export class AppComponent {
 
   public lineChartLegend: boolean = true;
   public lineChartType: string = 'bar';
+
+
+  // Mensual
+  public lineChartDataUltMes: Array<any> = [
+    { data: [], label: 'Ultimo Mes' }
+  ];
+  public lineChartLabelsUltMes: Array<any> = [];
+  public lineChartOptionsUltMes: any = {
+    responsive: true
+  };
+
+  public lineChartLegendUltMes: boolean = true;
+  public lineChartTypeUltMes: string = 'bar';
 
   // events
   public chartClicked(e: any): void {

@@ -3,14 +3,17 @@
 
   <!-- This fills the remaining space of the current row -->
   <span class="fill-remaining-space"></span>
-  <span> <i class="material-icons">help</i> </span>
+  <span>
+    <i class="material-icons">help</i>
+  </span>
 
 </md-toolbar>
 
+<br />
 <md-card>
   <md-card-header>
-    <md-card-title>Evolución</md-card-title>
-    <md-card-subtitle>Actualizado día a día con los datos publicados por el BCRA</md-card-subtitle>
+    <md-card-title>Evolución Anualizada</md-card-title>
+    <md-card-subtitle>La evolucion en el ultimo año tomando el valor del ultimo día de cada mes</md-card-subtitle>
   </md-card-header>
   <md-card-content>
 
@@ -18,9 +21,26 @@
     <div class="row">
       <div class="col-md-6">
         <div style="display: block;">
-          <canvas baseChart height="80" [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
-            [legend]="lineChartLegend" [chartType]="lineChartType" (chartHover)="chartHovered($event)"
-            (chartClick)="chartClicked($event)"></canvas>
+          <canvas baseChart height="80" [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions" [legend]="lineChartLegend"
+            [chartType]="lineChartType" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+        </div>
+      </div>
+    </div>
+
+
+  </md-card-content>
+</md-card>
+
+<md-card>
+  <md-card-header>
+    <md-card-title>Evolución Mensual</md-card-title>
+  </md-card-header>
+  <md-card-content>
+    <div class="row">
+      <div class="col-md-6">
+        <div style="display: block;">
+          <canvas baseChart height="80" [datasets]="lineChartDataUltMes" [labels]="lineChartLabelsUltMes" [options]="lineChartOptionsUltMes" [legend]="lineChartLegendUltMes"
+            [chartType]="lineChartTypeUltMes" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
         </div>
       </div>
     </div>
