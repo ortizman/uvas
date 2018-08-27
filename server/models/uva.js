@@ -6,6 +6,10 @@ module.exports = function (Uva) {
     return new Date(date.getFullYear(), ((date.getMonth()) - sustractMonth), day);
   };
 
+  let variation = (act, ant) => {
+    return ((act[0].$valor - ant[0].$valor) / ant[0].$valor) * 100;
+  }
+
   Uva.variationInterYear = (cb) => {
     let d = new Date();
 
@@ -19,15 +23,13 @@ module.exports = function (Uva) {
       (err, ant) => {
         if (!err) {
           Uva.find(
-            { 
-              where: { 
-                fecha: getFormatDate(d, 0, d.getDate()) 
-              } 
+            {
+              where: {
+                fecha: getFormatDate(d, 0, d.getDate())
+              }
             },
             (err, act) => {
-
-              let res = (act[0].$valor - ant[0].$valor) / ant[0].$valor
-              cb(err, res * 100)
+              cb(err, variation(act, ant))
             })
         } else {
           cb(err, null)
@@ -41,8 +43,7 @@ module.exports = function (Uva) {
   Uva.acumulateLastYear = (cb) => {
     let d = new Date();
 
-    Uva.find(
-      {
+    Uva.find({
         where: {
           fecha: getFormatDate(d, d.getMonth(), 1)
         },
@@ -50,23 +51,43 @@ module.exports = function (Uva) {
       },
       (err, ant) => {
         if (!err) {
-          Uva.find(
-            { 
-              where: { 
-                fecha: getFormatDate(d, 0, d.getDate()) 
-              } 
+          Uva.find({
+              where: {
+                fecha: getFormatDate(d, 0, d.getDate())
+              }
             },
             (err, act) => {
-              let res = (act[0].$valor - ant[0].$valor) / ant[0].$valor
-              cb(err, res * 100)
+              cb(err, variation(act, ant))
             })
         } else {
           cb(err, null)
         }
-      }
+      });
+  }
 
-    );
+  Uva.acumulateLastMonth = (cb) => {
+    let d = new Date();
 
+    Uva.find({
+        where: {
+          fecha: getFormatDate(d, 0, 1)
+        },
+        order: 'fecha ASC'
+      },
+      (err, ant) => {
+        if (!err) {
+          Uva.find({
+              where: {
+                fecha: getFormatDate(d, 0, d.getDate())
+              }
+            },
+            (err, act) => {
+              cb(err, variation(act, ant))
+            })
+        } else {
+          cb(err, null)
+        }
+      });
   }
 
   Uva.lastYear = function (cb) {
@@ -105,10 +126,7 @@ module.exports = function (Uva) {
         } else {
           cb(err, null)
         }
-      }
-
-    );
-
+      });
   };
 
   Uva.remoteMethod('lastYear', {
@@ -125,4 +143,10 @@ module.exports = function (Uva) {
     returns: { arg: 'response', type: 'object', root: true },
     http: { path: '/acumulateLastYear', verb: 'get' },
   });
+
+  Uva.remoteMethod('acumulateLastMonth', {
+    returns: { arg: 'response', type: 'object', root: true },
+    http: { path: '/acumulateLastMonth', verb: 'get' },
+  });
 };
+

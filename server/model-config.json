@@ -27,7 +27,8 @@
           "exists": true,
           "lastYear": true,
           "variationInterYear": true,
-          "acumulateLastYear": true
+          "acumulateLastYear": true,
+          "acumulateLastMonth": true
         }
       }
     }
