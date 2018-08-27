@@ -6,6 +6,69 @@ module.exports = function (Uva) {
     return new Date(date.getFullYear(), ((date.getMonth()) - sustractMonth), day);
   };
 
+  Uva.variationInterYear = (cb) => {
+    let d = new Date();
+
+    Uva.find(
+      {
+        where: {
+          fecha: getFormatDate(d, 12, d.getDate())
+        },
+        order: 'fecha ASC'
+      },
+      (err, ant) => {
+        if (!err) {
+          Uva.find(
+            { 
+              where: { 
+                fecha: getFormatDate(d, 0, d.getDate()) 
+              } 
+            },
+            (err, act) => {
+
+              let res = (act[0].$valor - ant[0].$valor) / ant[0].$valor
+              cb(err, res * 100)
+            })
+        } else {
+          cb(err, null)
+        }
+      }
+
+    );
+
+  }
+
+  Uva.acumulateLastYear = (cb) => {
+    let d = new Date();
+
+    Uva.find(
+      {
+        where: {
+          fecha: getFormatDate(d, d.getMonth(), 1)
+        },
+        order: 'fecha ASC'
+      },
+      (err, ant) => {
+        if (!err) {
+          Uva.find(
+            { 
+              where: { 
+                fecha: getFormatDate(d, 0, d.getDate()) 
+              } 
+            },
+            (err, act) => {
+              let res = (act[0].$valor - ant[0].$valor) / ant[0].$valor
+              cb(err, res * 100)
+            })
+        } else {
+          cb(err, null)
+        }
+      }
+
+    );
+
+  }
+
   Uva.lastYear = function (cb) {
     var d = new Date();
 
@@ -43,7 +106,7 @@ module.exports = function (Uva) {
           cb(err, null)
         }
       }
-      
+
     );
 
   };
@@ -51,5 +114,15 @@ module.exports = function (Uva) {
   Uva.remoteMethod('lastYear', {
     returns: { arg: 'response', type: 'object', root: true },
     http: { path: '/lastYear', verb: 'get' },
+  });
+
+  Uva.remoteMethod('variationInterYear', {
+    returns: { arg: 'response', type: 'object', root: true },
+    http: { path: '/variationInterYear', verb: 'get' },
+  });
+
+  Uva.remoteMethod('acumulateLastYear', {
+    returns: { arg: 'response', type: 'object', root: true },
+    http: { path: '/acumulateLastYear', verb: 'get' },
   });
 };
