@@ -25,7 +25,9 @@
           "findById": true,
           "count": true,
           "exists": true,
-          "lastYear": true
+          "lastYear": true,
+          "variationInterYear": true,
+          "acumulateLastYear": true
         }
       }
     }
