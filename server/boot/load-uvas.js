@@ -9,7 +9,7 @@ module.exports = function (app) {
   let currentDate = (today.getDate() + 1) + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
   horseman
     .userAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36')
-    .open('http://www.bcra.gob.ar/PublicacionesEstadisticas/Principales_variables_datos.asp?descri=22&fecha=Fecha_Cvs&campo=Cvs')
+    .open('http://www.bcra.gob.ar/PublicacionesEstadisticas/Principales_variables_datos.asp?serie=7913&detalle=Unidad%20de%20Valor%20Adquisitivo%20(UVA)%A0(en%20pesos%20-con%20dos%20decimales-,%20base%2031.3.2016=14.05)')
     .wait(3000)
     .type('select[name="desde"]', '31/03/2016') // fecha de inicio de computo
     .type('select[name="hasta"]', currentDate.toString())
