@@ -1,0 +1,36 @@
+{
+  "_meta": {
+    "sources": [
+      "loopback/common/models",
+      "loopback/server/models",
+      "../common/models",
+      "./models"
+    ],
+    "mixins": [
+      "loopback/common/mixins",
+      "loopback/server/mixins",
+      "../common/mixins",
+      "./mixins"
+    ]
+  },
+  "Uva": {
+    "dataSource": "db",
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "find": true,
+          "findOne": true,
+          "findById": true,
+          "count": true,
+          "exists": true,
+          "lastYear": true,
+          "variationInterYear": true,
+          "acumulateLastYear": true,
+          "acumulateLastMonth": true
+        }
+      }
+    }
+  }
+}
