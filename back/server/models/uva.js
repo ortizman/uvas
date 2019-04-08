@@ -29,7 +29,13 @@ module.exports = function (Uva) {
               }
             },
             (err, act) => {
-              cb(err, variation(act, ant))
+              let res = undefined;
+              try {
+                res = variation(act, ant);
+              } catch (error) {
+                err = "sin resultados";
+              }
+              cb(err, res)
             })
         } else {
           cb(err, null)

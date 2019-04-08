@@ -4,14 +4,14 @@ const _ = require('lodash');
 const q = require('q');
 
 module.exports = function (app) {
-  var horseman = new Horseman();
+  var horseman = new Horseman({ timeout: 15000 });
   var today = new Date();
   let currentDate = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + (today.getDate() + 1)).slice(-2);
   horseman
     .userAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36')
     .open('http://www.bcra.gob.ar/PublicacionesEstadisticas/Principales_variables_datos.asp?serie=7913&detalle=Unidad%20de%20Valor%20Adquisitivo%20(UVA)%A0(en%20pesos%20-con%20dos%20decimales-,%20base%2031.3.2016=14.05)')
-    .wait(6000)
     .type('input[name="fecha_desde"]', '2016-03-31') // fecha de inicio de computo
+    .wait(500)
     .type('input[name="fecha_hasta"]', currentDate.toString())
     .click('.btn-primary')
     .waitForSelector('.table')
@@ -41,7 +41,13 @@ var processInfo = (html) => {
     var uvas = [];
     for (var index = 0; index < values.length; index = index + 2) {
       const [d, m, y] = values[index].split('/')
-      uvas.push({ fecha: new Date(y, m - 1, d), valor: +values[index + 1].replace(/\./g, '').replace(',', '.') });
+      try {
+        uvas.push({ fecha: new Date(y, m - 1, d), valor: +values[index + 1].replace(/\./g, '').replace(',', '.') });
+      } catch (error) {
+        console.error(values[index].split('/'));
+        console.error(values[index + 1]);
+
+      }
     }
     console.log(_.head(uvas));
     def.resolve(uvas);
