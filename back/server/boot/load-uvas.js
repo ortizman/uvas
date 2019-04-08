@@ -6,18 +6,15 @@ const q = require('q');
 module.exports = function (app) {
   var horseman = new Horseman();
   var today = new Date();
-  let currentDate = (today.getDate() + 1) + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
+  let currentDate = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + (today.getDate() + 1)).slice(-2);
   horseman
     .userAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36')
     .open('http://www.bcra.gob.ar/PublicacionesEstadisticas/Principales_variables_datos.asp?serie=7913&detalle=Unidad%20de%20Valor%20Adquisitivo%20(UVA)%A0(en%20pesos%20-con%20dos%20decimales-,%20base%2031.3.2016=14.05)')
-    .wait(3000)
-    .type('select[name="desde"]', '31/03/2016') // fecha de inicio de computo
-    .type('select[name="hasta"]', currentDate.toString())
-    .wait(1000)
+    .wait(6000)
+    .type('input[name="fecha_desde"]', '2016-03-31') // fecha de inicio de computo
+    .type('input[name="fecha_hasta"]', currentDate.toString())
     .click('.btn-primary')
-    .keyboardEvent('keypress', 16777221)
-    .waitForSelector('#tabla')
-    .wait(2000)
+    .waitForSelector('.table')
     .html()
     .then(html => processInfo(html))
     .then(uvas => {
@@ -38,7 +35,7 @@ var processInfo = (html) => {
 
   try {
     var $ = cheerio.load(html);
-    var rows = $('#tabla tbody tr').text().trim();
+    var rows = $('.table tbody tr').text().trim();
     var values = rows.split('\n').map(function (e) { return e.trim(); });
     values = _.compact(values);
     var uvas = [];
